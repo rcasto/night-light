@@ -19,4 +19,5 @@ process.on('exit', cleanup);
 process.on('SIGINT', cleanup);
 
 init();
+readLightSensor(pin);
 rpio.poll(pin, readLightSensor);
