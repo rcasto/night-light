@@ -12,11 +12,14 @@ function init() {
 }
 
 function readLightSensor(pin) {
-    console.log(`Light sensor reading: ${lightSensorVal}`);
-
     var lightSensorVal = rpio.read(pin);
     rpio.write(nightLightPin, 
         lightSensorVal === rpio.LOW ? rpio.HIGH : rpio.LOW);
+    printLighSensorReading(lightSensorVal);
+}
+
+function printLighSensorReading(lightSensorVal) {
+    console.log(`Light sensor reading: ${lightSensorVal}`);
 }
 
 function cleanup() {
