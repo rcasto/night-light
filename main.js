@@ -1,23 +1,28 @@
 var rpio = require('rpio');
 
-var pin = 8;
+var lightSensorPin = 8;
+var nightLightPin = 7;
 
 function init() {
-    rpio.open(pin, rpio.INPUT);
+    rpio.open(lightSensorPin, rpio.INPUT);
+    rpio.open(nightLightPin, rpio.OUTPUT);
 }
 
 function readLightSensor(pin) {
     var lightSensorVal = rpio.read(pin);
+    rpio.write(nightLightPin, lightSensorVal === rpio.LOW ? rpio.HIGH : rpio.LOW);
     console.log(`Light sensor reading: ${lightSensorVal}`);
 }
 
 function cleanup() {
-    rpio.poll(pin, null);
+    rpio.poll(lightSensorPin, null);
+    rpio.close(lightSensorPin);
+    rpio.close(nightLightPin);
 }
 
 process.on('exit', cleanup);
 process.on('SIGINT', cleanup);
 
 init();
-readLightSensor(pin);
-rpio.poll(pin, readLightSensor);
+readLightSensor(lightSensorPin);
+rpio.poll(lightSensorPin, readLightSensor);
