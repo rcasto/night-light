@@ -1,0 +1,11 @@
+{
+  "name": "night-light",
+  "version": "1.0.0",
+  "description": "Night light powered via raspberry pi",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "Richie Casto",
+  "license": "ISC"
+}
