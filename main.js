@@ -6,15 +6,17 @@ var nightLightPin = 7;
 function init() {
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
-    
+
     readLightSensor(lightSensorPin);
     rpio.poll(lightSensorPin, readLightSensor);
 }
 
 function readLightSensor(pin) {
-    var lightSensorVal = rpio.read(pin);
-    rpio.write(nightLightPin, lightSensorVal === rpio.LOW ? rpio.HIGH : rpio.LOW);
     console.log(`Light sensor reading: ${lightSensorVal}`);
+
+    var lightSensorVal = rpio.read(pin);
+    rpio.write(nightLightPin, 
+        lightSensorVal === rpio.LOW ? rpio.HIGH : rpio.LOW);
 }
 
 function cleanup() {
