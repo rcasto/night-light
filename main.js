@@ -6,7 +6,7 @@ function init() {
     rpio.open(pin, rpio.INPUT);
 }
 
-function readLightSensor() {
+function readLightSensor(pin) {
     var lightSensorVal = rpio.read(pin);
     console.log(`Light sensor reading: ${lightSensorVal}`);
 }
