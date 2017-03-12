@@ -6,6 +6,9 @@ var nightLightPin = 7;
 function init() {
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
+    
+    readLightSensor(lightSensorPin);
+    rpio.poll(lightSensorPin, readLightSensor);
 }
 
 function readLightSensor(pin) {
@@ -24,5 +27,3 @@ process.on('exit', cleanup);
 process.on('SIGINT', cleanup);
 
 init();
-readLightSensor(lightSensorPin);
-rpio.poll(lightSensorPin, readLightSensor);
