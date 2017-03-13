@@ -26,6 +26,7 @@ function cleanup() {
     rpio.poll(lightSensorPin, null);
     rpio.close(lightSensorPin);
     rpio.close(nightLightPin);
+    process.exit();
 }
 
 process.on('exit', cleanup);
