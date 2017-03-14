@@ -12,6 +12,10 @@ function init() {
 }
 
 function readLightSensor(pin) {
+    var buffer = Buffer.alloc(100);
+    rpio.readbuf(pin, buffer);
+    buffer.forEach((entry) => console.log('Buffer read:', entry));
+
     var lightSensorVal = rpio.read(pin);
     rpio.write(nightLightPin, 
         lightSensorVal === rpio.LOW ? rpio.HIGH : rpio.LOW);
