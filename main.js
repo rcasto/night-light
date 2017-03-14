@@ -14,6 +14,7 @@ function init() {
 function readLightSensor(pin) {
     var buffer = Buffer.alloc(100);
     rpio.readbuf(pin, buffer);
+    buffer = Uint32Array.from(buffer);
     buffer.forEach((entry) => console.log('Buffer read:', entry));
 
     var lightSensorVal = rpio.read(pin);
