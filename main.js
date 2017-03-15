@@ -9,7 +9,9 @@ function init() {
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
     cron.schedule('0 21 * * *', () => start());
-    cron.schedule('0 7 * * *', () => stop());
+    // cron.schedule('0 7 * * *', () => stop());
+    // stop at 10:30 pm for testing
+    cron.schedule('30 22 * * *', () => stop());
     start();
 }
 
