@@ -1,7 +1,7 @@
 var rpio = require('rpio');
 var schedule = require('node-schedule');
 
-var startHour = 21;  // 9pm
+var startHour = 10;  // 10pm
 var endHour = 7;     // 7am
 var lightSensorPin = 8;
 var nightLightPin = 7;
@@ -15,9 +15,11 @@ function init() {
     rpio.open(nightLightPin, rpio.OUTPUT);
 
     schedule.scheduleJob(rule, () => {
+        console.log('Running schedule task');
         readLightSensor(lightSensorPin);
         rpio.poll(lightSensorPin, readLightSensor);
     }).on('run', () => {
+        console.log('Just ran scheduling');
         var now = new Date(Date.now);
         if (now.getHours() < startHour && now.getHours() >= endHour) {
             reset();
