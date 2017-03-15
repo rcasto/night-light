@@ -9,9 +9,9 @@ function init() {
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
     // Start the night light circuit at 9:30pm
-    cron.schedule('30 21 * * *', () => start());
+    cron.schedule('30 21 * * *', start);
     // Stop the night light circuit at 6:30am
-    cron.schedule('30 6 * * *', () => stop());
+    cron.schedule('30 6 * * *', stop);
     // Start the night light circuit immediately
     // the tasks will put it back into the regular rhythm
     start();
