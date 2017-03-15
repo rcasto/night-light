@@ -1,4 +1,9 @@
 var rpio = require('rpio');
+var schedule = require('node-schedule');
+
+var rule = new schedule.RecurrenceRule();
+rule.dayOfWeek = [new schedule.Range(0, 6)];
+rule.hour = [new schedule.Range(21, 7)];
 
 var lightSensorPin = 8;
 var nightLightPin = 7;
@@ -7,8 +12,10 @@ function init() {
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
 
-    readLightSensor(lightSensorPin);
-    rpio.poll(lightSensorPin, readLightSensor);
+    schedule.scheduleJob(rule, () => {
+        readLightSensor(lightSensorPin);
+        rpio.poll(lightSensorPin, readLightSensor);
+    });
 }
 
 function readLightSensor(pin) {

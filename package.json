@@ -9,6 +9,7 @@
   "author": "Richie Casto",
   "license": "ISC",
   "dependencies": {
+    "node-schedule": "^1.2.1",
     "rpio": "^0.9.16"
   }
 }
