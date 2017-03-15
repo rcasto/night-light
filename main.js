@@ -1,32 +1,16 @@
-var rpio = require('rpio');
-var schedule = require('node-schedule');
+var helpers = require('./helpers');
+var rpio = helpers.isWindows(process.platform) ? helpers.rpioMock : require('rpio');
+var cron = require('node-cron');
 
-var startHour = 10;  // 10pm
-var endHour = 7;     // 7am
 var lightSensorPin = 8;
 var nightLightPin = 7;
-
-var rule = new schedule.RecurrenceRule();
-rule.dayOfWeek = [new schedule.Range(0, 6)]; // every day of the week
-rule.hour = [new schedule.Range(startHour, endHour)];
 
 function init() {
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
-
-    schedule.scheduleJob(rule, () => {
-        console.log('Running schedule task');
-        readLightSensor(lightSensorPin);
-        rpio.poll(lightSensorPin, readLightSensor);
-    }).on('run', () => {
-        console.log('Just ran scheduling');
-        var now = new Date(Date.now);
-        if (now.getHours() < startHour && now.getHours() >= endHour) {
-            reset();
-        }
-    });
-    
-    reset();
+    cron.schedule('0 21 * * *', () => start());
+    cron.schedule('0 7 * * *', () => stop());
+    start();
 }
 
 function readLightSensor(pin) {
@@ -40,7 +24,14 @@ function printLighSensorReading(lightSensorVal) {
     console.log(`Light sensor reading: ${lightSensorVal}`);
 }
 
-function reset() {
+function start() {
+    console.log('Turning on night light circuit');
+    readLightSensor(lightSensorPin);
+    rpio.poll(lightSensorPin, readLightSensor);
+}
+
+function stop() {
+    console.log('Turning off night light circuit');
     rpio.write(nightLightPin, rpio.LOW);
     rpio.poll(lightSensorPin, null);
 }
