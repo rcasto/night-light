@@ -18,7 +18,7 @@ function init() {
     cron.schedule('37 22 * * *', () => stop());
     // Start the night light circuit immediately
     // the tasks will put it back into the regular rhythm
-    // start();
+    start();
 }
 
 function readLightSensor(pin) {
