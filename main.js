@@ -12,10 +12,10 @@ function init() {
     // cron.schedule('0 21 * * *', () => start());
     // Stop the night light circuit at 7am
     // cron.schedule('0 7 * * *', () => stop());
-    // start at 10:39pm for testing
-    cron.schedule('39 22 * * *', () => start());
-    // stop at 10:37pm for testing
-    cron.schedule('37 22 * * *', () => stop());
+    // start at 10:37pm for testing
+    cron.schedule('40 22 * * *', () => start());
+    // stop at 10:39pm for testing
+    cron.schedule('38 22 * * *', () => stop());
     // Start the night light circuit immediately
     // the tasks will put it back into the regular rhythm
     start();
