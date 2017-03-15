@@ -15,7 +15,14 @@ function init() {
     schedule.scheduleJob(rule, () => {
         readLightSensor(lightSensorPin);
         rpio.poll(lightSensorPin, readLightSensor);
+    }).on('run', () => {
+        var now = new Date(Date.now);
+        if (now.getHours() >= 7) {
+            reset();
+        }
     });
+    
+    reset();
 }
 
 function readLightSensor(pin) {
@@ -27,6 +34,11 @@ function readLightSensor(pin) {
 
 function printLighSensorReading(lightSensorVal) {
     console.log(`Light sensor reading: ${lightSensorVal}`);
+}
+
+function reset() {
+    rpio.write(nightLightPin, rpio.LOW);
+    rpio.poll(lightSensorPin, null);
 }
 
 function cleanup() {
