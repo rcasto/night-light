@@ -1,12 +1,14 @@
 var rpio = require('rpio');
 var schedule = require('node-schedule');
 
-var rule = new schedule.RecurrenceRule();
-rule.dayOfWeek = [new schedule.Range(0, 6)];
-rule.hour = [new schedule.Range(21, 7)];
-
+var startHour = 21;  // 9pm
+var endHour = 7;     // 7am
 var lightSensorPin = 8;
 var nightLightPin = 7;
+
+var rule = new schedule.RecurrenceRule();
+rule.dayOfWeek = [new schedule.Range(0, 6)]; // every day of the week
+rule.hour = [new schedule.Range(startHour, endHour)];
 
 function init() {
     rpio.open(lightSensorPin, rpio.INPUT);
@@ -17,7 +19,7 @@ function init() {
         rpio.poll(lightSensorPin, readLightSensor);
     }).on('run', () => {
         var now = new Date(Date.now);
-        if (now.getHours() >= 7) {
+        if (now.getHours() < startHour && now.getHours() >= endHour) {
             reset();
         }
     });
