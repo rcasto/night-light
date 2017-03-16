@@ -28,7 +28,7 @@ function init() {
     // that supersedes and takes over
     initializePhaseTimeoutId = setTimeout(() => {
         var now = new Date(Date.now());
-        if (isBetweenTimes(now, endTime, startTime)) {
+        if (!isBetweenTimes(now, endTime, startTime)) {
             stop(true);
         }
     }, initializationPhaseTime);
