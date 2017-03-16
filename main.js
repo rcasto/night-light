@@ -21,7 +21,7 @@ var endTime = {
 
 function init() {
     cron.schedule(`${startTime.minutes} ${startTime.hour} * * *`, start);
-    cron.schedule(`${endTime.minutes} ${endTime.hour} * * *`, stop);
+    cron.schedule(`${endTime.minutes} ${endTime.hour} * * *`, () => stop(true));
     // Start the night light circuit immediately
     // for 10 minutes.  Allows for testing immediately to see it working.
     // Then set to state dictated by tasks.  If task occurs during testing
@@ -29,7 +29,7 @@ function init() {
     initializePhaseTimeoutId = setTimeout(() => {
         var now = new Date(Date.now());
         if (isBetweenTimes(now, endTime, startTime)) {
-            stop();
+            stop(true);
         }
     }, initializationPhaseTime);
     start();
@@ -61,10 +61,12 @@ function start() {
     rpio.poll(lightSensorPin, readLightSensor);
 }
 
-function stop() {
+function stop(shouldPreservePin) {
     console.log('Turning off night light circuit');
-    rpio.close(lightSensorPin, rpio.PIN_PRESERVE);
-    rpio.close(nightLightPin, rpio.PIN_PRESERVE);
+    rpio.close(lightSensorPin, 
+        shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
+    rpio.close(nightLightPin, 
+        shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
 }
 
 function cleanupTimer() {
@@ -75,7 +77,7 @@ function cleanupTimer() {
 }
 
 function cleanup() {
-    stop();
+    stop(false);
     cleanupTimer();
     process.exit();
 }
