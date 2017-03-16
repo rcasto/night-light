@@ -5,7 +5,7 @@ var cron = require('node-cron');
 var lightSensorPin = 8;
 var nightLightPin = 7;
 
-var initializationPhaseTime = 1 * 30 * 1000; // 10 minutes
+var initializationPhaseTime = 10 * 60 * 1000; // 10 minutes
 var initializePhaseTimeoutId = null;
 
 // Start the night light circuit at 9:30pm
@@ -28,13 +28,11 @@ function init() {
     // that supersedes and takes over
     initializePhaseTimeoutId = setTimeout(() => {
         var now = new Date(Date.now());
-        if (!isBetweenTimes(now, endTime, startTime)) {
-            // stop(true);
-            start();
+        if (isBetweenTimes(now, endTime, startTime)) {
+            stop(true);
         }
     }, initializationPhaseTime);
     start();
-    stop(true);
 }
 
 function isBetweenTimes(time, start, end) {
@@ -57,7 +55,7 @@ function printLighSensorReading(lightSensorVal) {
 
 function start() {
     console.log('Turning on night light circuit');
-    rpio.open(lightSensorPin, rpio.INPUT, rpio.PULL_UP);
+    rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
     readLightSensor(lightSensorPin);
     rpio.poll(lightSensorPin, readLightSensor);
@@ -66,8 +64,7 @@ function start() {
 function stop(shouldPreservePin) {
     console.log('Turning off night light circuit');
     rpio.write(nightLightPin, rpio.LOW);
-    rpio.close(lightSensorPin, 
-        shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
+    rpio.close(lightSensorPin);
     rpio.close(nightLightPin,
         shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
 }
