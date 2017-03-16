@@ -5,7 +5,7 @@ var cron = require('node-cron');
 var lightSensorPin = 8;
 var nightLightPin = 7;
 
-var initializationPhaseTime = 2 * 60 * 1000; // 10 minutes
+var initializationPhaseTime = 1 * 60 * 1000; // 10 minutes
 var initializePhaseTimeoutId = null;
 
 // Start the night light circuit at 9:30pm
@@ -63,6 +63,7 @@ function start() {
 
 function stop(shouldPreservePin) {
     console.log('Turning off night light circuit');
+    rpio.write(nightLightPin, rpio.LOW);
     rpio.close(lightSensorPin, 
         shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
     rpio.close(nightLightPin);
