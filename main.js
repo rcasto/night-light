@@ -66,7 +66,8 @@ function stop(shouldPreservePin) {
     rpio.write(nightLightPin, rpio.LOW);
     rpio.close(lightSensorPin, 
         shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
-    rpio.close(nightLightPin);
+    rpio.close(nightLightPin,
+        shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
 }
 
 function cleanupTimer() {
