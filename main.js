@@ -5,16 +5,41 @@ var cron = require('node-cron');
 var lightSensorPin = 8;
 var nightLightPin = 7;
 
+var initializationPhaseTime = 10 * 60 * 1000; // 10 minutes
+var initializePhaseTimeoutId = null;
+
+// Start the night light circuit at 9:30pm
+var startTime = {
+    hour: 21,
+    minutes: 30
+};
+// Stop the night light circuit at 6:30am
+var endTime = {
+    hour: 6,
+    minutes: 30
+};
+
 function init() {
-    rpio.open(lightSensorPin, rpio.INPUT);
-    rpio.open(nightLightPin, rpio.OUTPUT);
-    // Start the night light circuit at 9:30pm
-    cron.schedule('30 21 * * *', start);
-    // Stop the night light circuit at 6:30am
-    cron.schedule('30 6 * * *', stop);
+    cron.schedule(`${startTime.minutes} ${startTime.hour} * * *`, start);
+    cron.schedule(`${endTime.minutes} ${endTime.hour} * * *`, stop);
     // Start the night light circuit immediately
-    // the tasks will put it back into the regular rhythm
+    // for 10 minutes.  Allows for testing immediately to see it working.
+    // Then set to state dictated by tasks.  If task occurs during testing
+    // that supersedes and takes over
+    initializePhaseTimeoutId = setTimeout(() => {
+        var now = new Date(Date.now());
+        if (isBetweenTimes(now, endTime, startTime)) {
+            stop();
+        }
+    }, initializationPhaseTime);
     start();
+}
+
+function isBetweenTimes(time, start, end) {
+    var timeHour = time.getHours();
+    var timeMinutes = time.getMinutes();
+    return ((timeHour >= start.hour && timeMinutes >= start.minutes) &&
+            (timeHour < end.hour && timeMinutes < end.minutes));
 }
 
 function readLightSensor(pin) {
@@ -30,20 +55,28 @@ function printLighSensorReading(lightSensorVal) {
 
 function start() {
     console.log('Turning on night light circuit');
+    rpio.open(lightSensorPin, rpio.INPUT, rpio.PULL_DOWN);
+    rpio.open(nightLightPin, rpio.OUTPUT, rpio.PULL_DOWN);
     readLightSensor(lightSensorPin);
     rpio.poll(lightSensorPin, readLightSensor);
 }
 
 function stop() {
     console.log('Turning off night light circuit');
-    rpio.write(nightLightPin, rpio.LOW);
-    rpio.poll(lightSensorPin, null);
+    rpio.close(lightSensorPin, rpio.PIN_PRESERVE);
+    rpio.close(nightLightPin, rpio.PIN_PRESERVE);
+}
+
+function cleanupTimer() {
+    if (initializePhaseTimeoutId) {
+        clearTimeout(initializePhaseTimeoutId);
+    }
+    initializePhaseTimeoutId = null;
 }
 
 function cleanup() {
-    rpio.poll(lightSensorPin, null);
-    rpio.close(lightSensorPin);
-    rpio.close(nightLightPin);
+    stop();
+    cleanupTimer();
     process.exit();
 }
 
