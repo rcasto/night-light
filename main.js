@@ -5,7 +5,7 @@ var cron = require('node-cron');
 var lightSensorPin = 8;
 var nightLightPin = 7;
 
-var initializationPhaseTime = 1 * 60 * 1000; // 10 minutes
+var initializationPhaseTime = 10 * 60 * 1000; // 10 minutes
 var initializePhaseTimeoutId = null;
 
 // Start the night light circuit at 9:30pm
