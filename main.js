@@ -20,8 +20,14 @@ var endTime = {
 };
 
 function init() {
-    cron.schedule(`${startTime.minutes} ${startTime.hour} * * *`, start);
-    cron.schedule(`${endTime.minutes} ${endTime.hour} * * *`, () => stop(true));
+    cron.schedule(`${startTime.minutes} ${startTime.hour} * * *`, () => {
+        cleanupTimer();
+        start();
+    });
+    cron.schedule(`${endTime.minutes} ${endTime.hour} * * *`, () => {
+        cleanupTimer();
+        stop(true);
+    });
     // Start the night light circuit immediately
     // for 10 minutes.  Allows for testing immediately to see it working.
     // Then set to state dictated by task times.  If task occurs during testing
@@ -62,7 +68,6 @@ function printLighSensorReading(lightSensorVal) {
 
 function start() {
     console.log('Turning on night light circuit');
-    cleanupTimer();
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
     readLightSensor(lightSensorPin);
@@ -71,7 +76,6 @@ function start() {
 
 function stop(shouldPreservePin) {
     console.log('Turning off night light circuit');
-    cleanupTimer();
     rpio.write(nightLightPin, rpio.LOW);
     rpio.close(lightSensorPin);
     rpio.close(nightLightPin,

@@ -2,7 +2,7 @@
   "name": "night-light",
   "version": "1.0.0",
   "description": "Night light powered via raspberry pi",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "node main.js",
     "clean": "rm -rf node_modules"
