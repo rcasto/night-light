@@ -5,7 +5,7 @@ var cron = require('node-cron');
 var lightSensorPin = 8;
 var nightLightPin = 7;
 
-var initializationPhaseTime = 10 * 60 * 1000; // 10 minutes
+var initializationPhaseTime = 1 * 60 * 1000; // 10 minutes
 var initializePhaseTimeoutId = null;
 
 // Start the night light circuit at 9:30pm
@@ -27,19 +27,25 @@ function init() {
     // Then set to state dictated by task times.  If task occurs during testing
     // that supersedes and takes over
     initializePhaseTimeoutId = setTimeout(() => {
-        var now = new Date(Date.now());
-        if (isBetweenTimes(now, endTime, startTime)) {
+        if (isNowBetweenTimes(endTime, startTime)) {
             stop(true);
         }
     }, initializationPhaseTime);
     start();
 }
 
-function isBetweenTimes(time, start, end) {
-    var timeHour = time.getHours();
-    var timeMinutes = time.getMinutes();
-    return ((timeHour >= start.hour && timeMinutes >= start.minutes) &&
-            (timeHour < end.hour && timeMinutes < end.minutes));
+function isNowBetweenTimes(startTime, endTime) {
+    var nowDate = new Date();
+    var startDate = new Date(nowDate.getTime());
+    var endDate = new Date(nowDate.getTime());
+
+    startDate.setHours(startTime.hour);
+    startDate.setMinutes(startTime.minutes);
+
+    endDate.setHours(endTime.hour);
+    endDate.setMinutes(endTime.minutes);
+
+    return nowDate >= startDate && nowDate < endDate;
 }
 
 function readLightSensor(pin) {
