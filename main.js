@@ -30,6 +30,7 @@ function init() {
         if (isNowBetweenTimes(endTime, startTime)) {
             stop(true);
         }
+        initializePhaseTimeoutId = null;
     }, initializationPhaseTime);
     start();
 }
@@ -61,6 +62,7 @@ function printLighSensorReading(lightSensorVal) {
 
 function start() {
     console.log('Turning on night light circuit');
+    cleanupTimer();
     rpio.open(lightSensorPin, rpio.INPUT);
     rpio.open(nightLightPin, rpio.OUTPUT);
     readLightSensor(lightSensorPin);
@@ -69,6 +71,7 @@ function start() {
 
 function stop(shouldPreservePin) {
     console.log('Turning off night light circuit');
+    cleanupTimer();
     rpio.write(nightLightPin, rpio.LOW);
     rpio.close(lightSensorPin);
     rpio.close(nightLightPin,
