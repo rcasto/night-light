@@ -1,6 +1,6 @@
 # night-light
 A little night light circuit powered by a Raspberry Pi.  This night light will turn "on" during a certain part of the day that you configure.
-When it is in this "on" state the LED's are not necessarily on unless the light level around the night light is sufficiently low
+When it is in this "on" state the LED's are not necessarily on unless the light level around the night light is sufficiently low as dictated by the light sensor
 
 ## Getting Started
 #### Things you'll Need
@@ -25,3 +25,21 @@ When it is in this "on" state the LED's are not necessarily on unless the light 
 * You got yourself a new night light
 
 ## Default Configuration
+The default configuration of the night light is driven by the **config.json** file which starts out with the following values:
+```json
+{
+    "lightSensorPin": 8,
+    "nightLightPin": 7,
+    "initializationTimeInMs": 600000,
+    "startTime": {
+        "hour": 21,
+        "minutes": 30,
+        "seconds": 0
+    },
+    "endTime": {
+        "hour": 6,
+        "minutes": 30,
+        "seconds": 0
+    }
+}
+```
