@@ -4,10 +4,12 @@
     "initializationTimeInMs": 600000,
     "startTime": {
         "hour": 21,
-        "minutes": 30
+        "minutes": 30,
+        "seconds": 0
     },
     "endTime": {
         "hour": 6,
-        "minutes": 30
+        "minutes": 30,
+        "seconds": 0
     }
 }

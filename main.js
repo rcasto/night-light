@@ -6,11 +6,11 @@ var cron = require('node-cron');
 var initializePhaseTimeoutId = null;
 
 function init() {
-    cron.schedule(`${config.startTime.minutes} ${config.startTime.hour} * * *`, () => {
+    cron.schedule(`${config.startTime.seconds} ${config.startTime.minutes} ${config.startTime.hour} * * *`, () => {
         cleanupTimer();
         start();
     });
-    cron.schedule(`${config.endTime.minutes} ${config.endTime.hour} * * *`, () => {
+    cron.schedule(`${config.endTime.seconds} ${config.endTime.minutes} ${config.endTime.hour} * * *`, () => {
         cleanupTimer();
         stop(true);
     });
