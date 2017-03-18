@@ -34,9 +34,11 @@ function isNowBetweenTimes(startTime, endTime) {
 
     startDate.setHours(startTime.hour);
     startDate.setMinutes(startTime.minutes);
+    startDate.setSeconds(startTime.seconds);
 
     endDate.setHours(endTime.hour);
     endDate.setMinutes(endTime.minutes);
+    endDate.setSeconds(endTime.seconds;
 
     return nowDate >= startDate && nowDate < endDate;
 }
