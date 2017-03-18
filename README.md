@@ -1,6 +1,6 @@
 # night-light
 A little night light circuit powered by a Raspberry Pi.  This night light will turn "on" during a certain part of the day that you configure.
-When it is in this "on" state the LED's are not necessarily on unless the light level around the night light is sufficiently low
+When it is in this "on" state the LED's are not necessarily on unless the light level around the night light is sufficiently low as dictated by the light sensor
 
 ## Getting Started
 #### Things you'll Need
