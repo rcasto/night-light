@@ -1,30 +1,16 @@
 var helpers = require('./helpers');
+var config = require('./config.json');
 var rpio = helpers.isWindows(process.platform) ? helpers.rpioMock : require('rpio');
 var cron = require('node-cron');
 
-var lightSensorPin = 8;
-var nightLightPin = 7;
-
-var initializationPhaseTime = 10 * 60 * 1000; // 10 minutes
 var initializePhaseTimeoutId = null;
 
-// Start the night light circuit at 9:30pm
-var startTime = {
-    hour: 21,
-    minutes: 30
-};
-// Stop the night light circuit at 6:30am
-var endTime = {
-    hour: 6,
-    minutes: 30
-};
-
 function init() {
-    cron.schedule(`${startTime.minutes} ${startTime.hour} * * *`, () => {
+    cron.schedule(`${config.startTime.minutes} ${config.startTime.hour} * * *`, () => {
         cleanupTimer();
         start();
     });
-    cron.schedule(`${endTime.minutes} ${endTime.hour} * * *`, () => {
+    cron.schedule(`${config.endTime.minutes} ${config.endTime.hour} * * *`, () => {
         cleanupTimer();
         stop(true);
     });
@@ -33,11 +19,11 @@ function init() {
     // Then set to state dictated by task times.  If task occurs during testing
     // that supersedes and takes over
     initializePhaseTimeoutId = setTimeout(() => {
-        if (isNowBetweenTimes(endTime, startTime)) {
+        if (isNowBetweenTimes(config.endTime, config.startTime)) {
             stop(true);
         }
         initializePhaseTimeoutId = null;
-    }, initializationPhaseTime);
+    }, config.initializationTimeInMs);
     start();
 }
 
@@ -57,7 +43,7 @@ function isNowBetweenTimes(startTime, endTime) {
 
 function readLightSensor(pin) {
     var lightSensorVal = rpio.read(pin);
-    rpio.write(nightLightPin, 
+    rpio.write(config.nightLightPin, 
         lightSensorVal === rpio.LOW ? rpio.HIGH : rpio.LOW);
     printLighSensorReading(lightSensorVal);
 }
@@ -68,17 +54,17 @@ function printLighSensorReading(lightSensorVal) {
 
 function start() {
     console.log('Turning on night light circuit');
-    rpio.open(lightSensorPin, rpio.INPUT);
-    rpio.open(nightLightPin, rpio.OUTPUT);
-    readLightSensor(lightSensorPin);
-    rpio.poll(lightSensorPin, readLightSensor);
+    rpio.open(config.lightSensorPin, rpio.INPUT);
+    rpio.open(config.nightLightPin, rpio.OUTPUT);
+    readLightSensor(config.lightSensorPin);
+    rpio.poll(config.lightSensorPin, readLightSensor);
 }
 
 function stop(shouldPreservePin) {
     console.log('Turning off night light circuit');
-    rpio.write(nightLightPin, rpio.LOW);
-    rpio.close(lightSensorPin);
-    rpio.close(nightLightPin,
+    rpio.write(config.nightLightPin, rpio.LOW);
+    rpio.close(config.lightSensorPin);
+    rpio.close(config.nightLightPin,
         shouldPreservePin ? rpio.PIN_PRESERVE : rpio.PIN_RESET);
 }
 

@@ -1,0 +1,15 @@
+{
+    "lightSensorPin": 8,
+    "nightLightPin": 7,
+    "initializationTimeInMs": 600000, // 10 minutes
+    // 9:30pm
+    "startTime": {
+        "hour": 21,
+        "minutes": 30
+    },
+    // 6:30am
+    "endTime": {
+        "hour": 6,
+        "minutes": 30
+    }
+}
