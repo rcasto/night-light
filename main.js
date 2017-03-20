@@ -24,7 +24,7 @@ function init() {
         }
         initializePhaseTimeoutId = null;
     }, config.initializationTimeInMs);
-    start();
+    start(true);
 }
 
 function isNowBetweenTimes(startTime, endTime) {
@@ -54,10 +54,10 @@ function printLighSensorReading(lightSensorVal) {
     console.log(`Light sensor reading: ${lightSensorVal}`);
 }
 
-function start() {
+function start(shouldResetPin) {
     console.log('Turning on night light circuit');
     rpio.open(config.lightSensorPin, rpio.INPUT);
-    rpio.open(config.nightLightPin, rpio.OUTPUT);
+    rpio.open(config.nightLightPin, rpio.OUTPUT, shouldResetPin ? rpio.HIGH : undefined);
     readLightSensor(config.lightSensorPin);
     rpio.poll(config.lightSensorPin, readLightSensor);
 }
