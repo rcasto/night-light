@@ -14,6 +14,8 @@ function init() {
         cleanupTimer();
         stop(true);
     });
+    process.on('exit', cleanup);
+    process.on('SIGINT', cleanup);
     // Start the night light circuit immediately
     // for 10 minutes.  Allows for testing immediately to see it working.
     // Then set to state dictated by task times.  If task occurs during testing
@@ -82,8 +84,5 @@ function cleanup() {
     cleanupTimer();
     process.exit();
 }
-
-process.on('exit', cleanup);
-process.on('SIGINT', cleanup);
 
 init();
