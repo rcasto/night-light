@@ -10,7 +10,7 @@
                startup_state = "inactive";
                function = "input";
             }; // pin
-            pin@p4 { function = "output"; startup_state = "active"; };
+            pin@p4 { function = "output"; startup_state = "active"; termination = "pull_up"; };
             pin@p14 { startup_state = "active"; };
             pin@p15 { function = "uart0";  termination = "pull_up"; drive_strength_mA = < 8 >; }; // RX uart0
             pin@p28 { function = "input";   termination = "pull_up";    }; // I2C 0 SDA
@@ -137,7 +137,7 @@
                startup_state = "inactive";
                function = "input";
             }; // pin
-            pin@p4 { function = "output"; startup_state = "active"; };
+            pin@p4 { function = "output"; startup_state = "active"; termination = "pull_up"; };
             pin@p14 { startup_state = "active"; };
             pin@p15 { function = "uart0";  termination = "pull_up"; drive_strength_mA = < 8 >; }; // RX uart0
             pin@p28 { function = "i2c0";   termination = "pull_up";    }; // I2C 0 SDA
@@ -285,7 +285,7 @@
                startup_state = "inactive";
                function = "input";
             }; // pin
-            pin@p4 { function = "output"; startup_state = "active"; };
+            pin@p4 { function = "output"; startup_state = "active"; termination = "pull_up"; };
             pin@p14 { startup_state = "active"; };
             pin@p15 { function = "uart0";  termination = "pull_up"; drive_strength_mA = < 8 >; }; // RX uart0
             pin@p47 { function = "output"; termination = "no_pulling"; polarity = "active_low"; }; // EMMC_ENABLE_N
