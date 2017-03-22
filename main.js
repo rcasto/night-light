@@ -1,25 +1,22 @@
 var helpers = require('./helpers');
 var config = require('./config.json');
-var rpio = helpers.isWindows(process.platform) ? helpers.rpioMock : require('rpio');
+var rpio = helpers.getRpio(process.platform);
 var cron = require('node-cron');
 
 var initializePhaseTimeoutId = null;
 
 function init() {
     cron.schedule(`${config.startTime.seconds} ${config.startTime.minutes} ${config.startTime.hour} * * *`, () => {
-        cleanupTimer();
-        start();
+        !initializePhaseTimeoutId && start();
     });
     cron.schedule(`${config.endTime.seconds} ${config.endTime.minutes} ${config.endTime.hour} * * *`, () => {
-        cleanupTimer();
-        stop(true);
+        !initializePhaseTimeoutId && stop(true);
     });
     process.on('exit', cleanup);
     process.on('SIGINT', cleanup);
     // Start the night light circuit immediately
     // for 10 minutes.  Allows for testing immediately to see it working.
-    // Then set to state dictated by task times.  If task occurs during testing
-    // that supersedes and takes over
+    // Then set to state dictated by task times.
     initializePhaseTimeoutId = setTimeout(() => {
         if (isNowBetweenTimes(config.endTime, config.startTime)) {
             stop(true);
@@ -49,19 +46,14 @@ function readLightSensor(pin) {
     var lightSensorVal = rpio.read(pin);
     rpio.write(config.nightLightPin, 
         lightSensorVal === rpio.LOW ? rpio.HIGH : rpio.LOW);
-    printLighSensorReading(lightSensorVal);
-}
-
-function printLighSensorReading(lightSensorVal) {
-    console.log(`Light sensor reading: ${lightSensorVal}`);
 }
 
 function start(shouldResetPin) {
     console.log('Turning on night light circuit');
-    rpio.open(config.lightSensorPin, rpio.INPUT);
     rpio.open(config.nightLightPin, rpio.OUTPUT, shouldResetPin ? rpio.HIGH : undefined);
-    readLightSensor(config.lightSensorPin);
+    rpio.open(config.lightSensorPin, rpio.INPUT, rpio.PULL_UP);
     rpio.poll(config.lightSensorPin, readLightSensor);
+    readLightSensor(config.lightSensorPin);
 }
 
 function stop(shouldPreservePin) {

@@ -1,4 +1,4 @@
-var windowsRegex = /^win/;
+var linuxRegex = /^lin/;
 var rpioMock = {
     read: (pin) => {
         console.log(`Read from pin ${pin}`);
@@ -12,6 +12,9 @@ var rpioMock = {
     },
     close: (pin) => {
         console.log(`Pin ${pin} has been closed`);
+    },
+    pud: (pin, resistor) => {
+        console.log(`Set pullup/pulldown resistor on pin ${pin}: ${resistor}`);
     },
     poll: (pin, handle) => {
         console.log(`Polling pin ${pin}`);
@@ -30,11 +33,11 @@ function getVoltageString(voltage) {
     return voltage > 0 ? 'HIGH' : 'LOW';
 }
 
-function isWindows(platform) {
-    return windowsRegex.test(platform);
+function getRpio(platform) {
+    return linuxRegex.test(platform) ? require('rpio') : rpioMock;
 }
 
 module.exports = {
     rpioMock,
-    isWindows
+    getRpio
 };
